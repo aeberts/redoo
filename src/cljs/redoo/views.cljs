@@ -1,16 +1,36 @@
 (ns redoo.views
-    (:require [re-frame.core :as re-frame]
+    (:require [re-frame.core :as re-frame :refer [subscribe]]
               [re-com.core :as re-com]))
 
+;; Todos
+
+(defn todo-item
+  []
+  (fn [{:keys [id status title]}]
+    [:li {:class (str (when status "completed "))}
+     title]))
+
+(defn task-list
+  []
+  (let [visible-todos @(subscribe [:visible-todos])
+        all-complete? @(subscribe [:all-complete?])]
+    [:ul#todo-list
+     (for [todo visible-todos]
+       ^{:key (:id todo)} [todo-item todo])]))
 
 ;; home
 
 (defn home-title []
-  (let [name (re-frame/subscribe [:name])]
+  (let [app-name (subscribe [:app-name])]
     (fn []
-      [re-com/title
-       :label (str "Hello from " @name ". This is the Home Page.")
-       :level :level1])))
+      [re-com/v-box
+       :gap "1em"
+       :children [
+                  [re-com/title
+                   :label (str "Hello from " @app-name ". This is the Home Page.")
+                   :level :level1]
+                  [task-list]
+                  ]])))
 
 (defn link-to-about-page []
   [re-com/hyperlink-href
@@ -21,7 +41,6 @@
   [re-com/v-box
    :gap "1em"
    :children [[home-title] [link-to-about-page]]])
-
 
 ;; about
 
@@ -53,7 +72,7 @@
   [panels panel-name])
 
 (defn main-panel []
-  (let [active-panel (re-frame/subscribe [:active-panel])]
+  (let [active-panel (subscribe [:active-panel])]
     (fn []
       [re-com/v-box
        :height "100%"

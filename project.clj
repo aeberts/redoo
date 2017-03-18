@@ -1,6 +1,7 @@
 (defproject redoo "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.9.229"]
+                 [org.clojure/clojurescript "1.9.89"]
+                 [figwheel-sidecar "0.5.6"]
                  [reagent "0.6.0"]
                  [re-frame "0.9.1"]
                  [re-frisk "0.3.2"]
@@ -19,13 +20,15 @@
 
   :min-lein-version "2.5.3"
 
-  :source-paths ["src/clj"]
+  :source-paths ["src/clj" "script"]
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"
                                     "resources/public/css"]
 
   :figwheel {:css-dirs ["resources/public/css"]
-             :ring-handler redoo.handler/dev-handler}
+             :ring-handler redoo.handler/dev-handler
+             :open-file-command "open-in-intellij"
+             }
 
   :garden {:builds [{:id           "screen"
                      :source-paths ["src/clj"]
@@ -38,15 +41,20 @@
 
   :profiles
   {:dev
-   {:dependencies [[binaryage/devtools "0.8.2"]]
-
-    :plugins      [[lein-figwheel "0.5.7"]]
-    }}
+   {:dependencies [[binaryage/devtools "0.8.2"]
+                   [com.cemerick/piggieback "0.2.1"]
+                   [org.clojure/tools.nrepl "0.2.10"]
+                   [figwheel-sidecar "0.5.6"]]
+    :plugins      [
+                   ;[lein-figwheel "0.5.7"]
+                   ]
+    :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]
+                   }}}
 
   :cljsbuild
   {:builds
    [{:id           "dev"
-     :source-paths ["src/cljs"]
+     :source-paths ["src/cljs" "script"]
      :figwheel     {:on-jsload "redoo.core/mount-root"}
      :compiler     {:main                 redoo.core
                     :output-to            "resources/public/js/compiled/app.js"
@@ -58,7 +66,7 @@
                     }}
 
     {:id           "min"
-     :source-paths ["src/cljs"]
+     :source-paths ["src/cljs" "script"]
      :jar true
      :compiler     {:main            redoo.core
                     :output-to       "resources/public/js/compiled/app.js"

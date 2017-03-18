@@ -1,6 +1,6 @@
 (ns redoo.core
     (:require [reagent.core :as reagent]
-              [re-frame.core :as re-frame]
+              [re-frame.core :as re-frame :refer [dispatch-sync]]
               [re-frisk.core :refer [enable-re-frisk!]]
               [redoo.events]
               [redoo.subs]
@@ -22,6 +22,6 @@
 
 (defn ^:export init []
   (routes/app-routes)
-  (re-frame/dispatch-sync [:initialize-db])
+  (dispatch-sync [:initialise-db])
   (dev-setup)
   (mount-root))
