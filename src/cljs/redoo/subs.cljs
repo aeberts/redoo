@@ -2,6 +2,11 @@
     (:require-macros [reagent.ratom :refer [reaction]])
     (:require [re-frame.core :refer [reg-sub subscribe]]))
 
+(reg-sub        ;; we can check if there is data
+  :initialised?          ;; usage (subscribe [:initialised?])
+  (fn  [db _]
+    (not (empty? db))))  ;; do we have data
+
 (reg-sub
  :app-config
  (fn [db]

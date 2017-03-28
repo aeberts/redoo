@@ -1,8 +1,33 @@
 (ns redoo.views
-    (:require [re-frame.core :as re-frame :refer [subscribe]]
+    (:require [reagent.core :as r]
+              [re-frame.core :as re-frame :refer [subscribe dispatch]]
               [re-com.core :as re-com]))
 
 ;; Todos
+
+;; Main input box to add todos
+;; The widget takes care of managing state
+;; The caller (in this case [home-panel] defines what event handlers are dispatched
+(defn main-todo-input
+  [{:keys [on-save]}]
+  (let [val (r/atom "")
+        stop #(reset! val "")
+        save #(let [v (-> @val str clojure.string/trim)]
+                (do
+                  (when (seq v) (on-save v))
+                  (stop)))
+        ]
+    (fn []
+         [:input {:type        "text"
+                  :val         @val
+                  :on-blur     save
+                  :on-change   #(reset! val (-> % .-target .-value))
+                  :on-key-down #(case (.-which %)
+                                  13 (save)
+                                  27 (stop)
+                                  nil)}
+          ])))
+
 
 (defn todo-item
   []
@@ -29,7 +54,6 @@
                   [re-com/title
                    :label (str "Hello from " @app-name ". This is the Home Page.")
                    :level :level1]
-                  [task-list]
                   ]])))
 
 (defn link-to-about-page []
@@ -40,7 +64,11 @@
 (defn home-panel []
   [re-com/v-box
    :gap "1em"
-   :children [[home-title] [link-to-about-page]]])
+   :children [[home-title]
+              [main-todo-input
+               {:on-save #(dispatch [:add-todo %])}]
+              [task-list]
+              [link-to-about-page]]])
 
 ;; about
 

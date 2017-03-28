@@ -22,6 +22,12 @@
    :active-panel :home-panel
    :app-name "Redoo"})
 
+(def fixtures
+  ["Add fixtures to the db"
+   "Add text box using re-com to enter data"
+   "Add check box to todo items"
+   "Mark completed items with strike through"])
+
 ;{
 ; 1 {:id 2 :title "Task 1" :status :not-started}
 ; 3 {:id 4 :title "Task 2" :status :not-started}
@@ -36,6 +42,7 @@
 ;;
 
 (def ls-key "todos-reframe")                          ;; localstore key
+
 (defn todos->local-store
   "Puts todos into localStorage"
   [todos]

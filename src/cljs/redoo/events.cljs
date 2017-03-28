@@ -58,6 +58,20 @@
     (let [id (allocate-next-id todos)]
       (assoc todos id {:id id :title text :status :not-started}))))
 
+;; Todo Make delete-todo take multiple ids
+(reg-event-db
+  :delete-todo
+  todo-interceptors
+  (fn [db [id]]
+    (dissoc db id)))
+
+(reg-event-db
+  :delete-all-todos
+  todo-interceptors
+  (fn [db _]
+    (-> db
+      (reset! :todos (sorted-map)))))
+
 (reg-event-db
   :set-active-panel
   (fn [db [_ active-panel]]
