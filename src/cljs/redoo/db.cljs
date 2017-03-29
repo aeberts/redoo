@@ -6,7 +6,7 @@
 (s/def ::id int?)
 (s/def ::title string?)
 (s/def ::app-name string?)
-(s/def ::status #{:not-started :in-progress :waiting :done})
+(s/def ::status #{:active :waiting :done})
 (s/def ::todo (s/keys :req-un [::id ::title ::status]))
 (s/def ::todos (s/and
                  (s/map-of ::id ::todo)

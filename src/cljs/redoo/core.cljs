@@ -26,6 +26,5 @@
   (dispatch-sync [:initialise-db])
   (for [i db/fixtures]
     (dispatch-sync [:add-todo i]))
-  ;(dispatch [:add-fixtures db/fixtures])
   (dev-setup)
   (mount-root))

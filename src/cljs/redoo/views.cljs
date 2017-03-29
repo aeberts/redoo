@@ -15,11 +15,10 @@
         save #(let [v (-> @val str clojure.string/trim)]
                 (do
                   (when (seq v) (on-save v))
-                  (stop)))
-        ]
+                  (stop)))]
     (fn []
          [:input {:type        "text"
-                  :val         @val
+                  :value         @val
                   :on-blur     save
                   :on-change   #(reset! val (-> % .-target .-value))
                   :on-key-down #(case (.-which %)
@@ -32,7 +31,10 @@
 (defn todo-item
   []
   (fn [{:keys [id status title]}]
-    [:li {:class (str (when status "completed "))}
+    [:li {:class (str (case status
+                        :active "active "
+                        :waiting "waiting "
+                        :done "done "))}
      title]))
 
 (defn task-list

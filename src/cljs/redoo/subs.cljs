@@ -2,7 +2,7 @@
     (:require-macros [reagent.ratom :refer [reaction]])
     (:require [re-frame.core :refer [reg-sub subscribe]]))
 
-(reg-sub        ;; we can check if there is data
+(reg-sub                 ;; we can check if there is data
   :initialised?          ;; usage (subscribe [:initialised?])
   (fn  [db _]
     (not (empty? db))))  ;; do we have data
@@ -43,6 +43,7 @@
 (defn sorted-todos
   [db _]
   (:todos db))
+
 (reg-sub :sorted-todos sorted-todos)
 
 (reg-sub

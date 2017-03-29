@@ -56,7 +56,7 @@
   todo-interceptors
   (fn [todos [text]]
     (let [id (allocate-next-id todos)]
-      (assoc todos id {:id id :title text :status :not-started}))))
+      (assoc todos id {:id id :title text :status :active}))))
 
 ;; Todo Make delete-todo take multiple ids
 (reg-event-db
