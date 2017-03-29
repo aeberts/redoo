@@ -1,32 +1,30 @@
 (ns redoo.views
-    (:require [reagent.core :as r]
-              [re-frame.core :as re-frame :refer [subscribe dispatch]]
-              [re-com.core :as re-com]))
+  (:require [reagent.core :as r]
+            [re-frame.core :as re-frame :refer [subscribe dispatch]]
+            [re-com.core :as re-com]))
 
 ;; Todos
 
 ;; Main input box to add todos
 ;; The widget takes care of managing state
 ;; The caller (in this case [home-panel] defines what event handlers are dispatched
-(defn main-todo-input
+(defn todo-input
   [{:keys [on-save]}]
   (let [val (r/atom "")
         stop #(reset! val "")
         save #(let [v (-> @val str clojure.string/trim)]
-                (do
-                  (when (seq v) (on-save v))
-                  (stop)))]
+                (when (seq v) (on-save v)
+                              (stop)))]
     (fn []
-         [:input {:type        "text"
-                  :value         @val
-                  :on-blur     save
-                  :on-change   #(reset! val (-> % .-target .-value))
-                  :on-key-down #(case (.-which %)
-                                  13 (save)
-                                  27 (stop)
-                                  nil)}
-          ])))
-
+      [:input
+       {:type        "text"
+        :value       @val
+        :on-blur     save
+        :on-change   #(reset! val (-> % .-target .-value))
+        :on-key-down #(case (.-which %)
+                        13 (save)
+                        27 (stop)
+                        nil)}])))
 
 (defn todo-item
   []
@@ -54,7 +52,7 @@
        :gap "1em"
        :children [
                   [re-com/title
-                   :label (str "Hello from " @app-name ". This is the Home Page.")
+                   :label (str @app-name)
                    :level :level1]
                   ]])))
 
@@ -67,10 +65,11 @@
   [re-com/v-box
    :gap "1em"
    :children [[home-title]
-              [main-todo-input
+              [todo-input
                {:on-save #(dispatch [:add-todo %])}]
               [task-list]
-              [link-to-about-page]]])
+              ;[link-to-about-page]
+              ]])
 
 ;; about
 

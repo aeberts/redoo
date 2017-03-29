@@ -28,11 +28,6 @@
    "Add check box to todo items"
    "Mark completed items with strike through"])
 
-;{
-; 1 {:id 2 :title "Task 1" :status :not-started}
-; 3 {:id 4 :title "Task 2" :status :not-started}
-; }
-
 ;; -- Local Storage  ----------------------------------------------------------
 ;;
 ;; Part of the todomvc challenge is to store todos in LocalStorage, and
@@ -41,7 +36,7 @@
 ;; filter. Just the todos.
 ;;
 
-(def ls-key "todos-reframe")                          ;; localstore key
+(def ls-key "redoo")                          ;; localstore key
 
 (defn todos->local-store
   "Puts todos into localStorage"

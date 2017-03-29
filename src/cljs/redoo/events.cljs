@@ -50,7 +50,6 @@
   (fn [{:keys [db local-store-todos]} _]                    ;; the handler being registered
     {:db (assoc default-value :todos local-store-todos)}))  ;; all hail the new state
 
-
 (reg-event-db
   :add-todo
   todo-interceptors
@@ -62,15 +61,23 @@
 (reg-event-db
   :delete-todo
   todo-interceptors
-  (fn [db [id]]
-    (dissoc db id)))
+  (fn [todos [id]]
+    (dissoc todos id)))
+
+;; Delete multiple todos example:
+;(run! #(re-frame.core/dispatch [:delete-todo %]) [3 4 5])
+
+(reg-event-db
+  :change-todo-status
+  todo-interceptors
+  (fn [todos [id status]]
+    (update-in todos [id] assoc :status status)))
 
 (reg-event-db
   :delete-all-todos
-  todo-interceptors
   (fn [db _]
     (-> db
-      (reset! :todos (sorted-map)))))
+      (assoc :todos (sorted-map)))))
 
 (reg-event-db
   :set-active-panel

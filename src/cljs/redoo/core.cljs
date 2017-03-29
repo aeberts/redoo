@@ -24,7 +24,8 @@
 (defn ^:export init []
   (routes/app-routes)
   (dispatch-sync [:initialise-db])
-  (for [i db/fixtures]
-    (dispatch-sync [:add-todo i]))
+  ;; Fixme : only run when db has no items and debug is true
+  (run! #(dispatch-sync [:add-todo %]) db/fixtures)
   (dev-setup)
   (mount-root))
+
