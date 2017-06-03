@@ -27,13 +27,44 @@
                         nil)}])))
 
 (defn todo-item
-  []
-  (fn [{:keys [id status title]}]
-    [:li {:class (str (case status
-                        :active "active "
-                        :waiting "waiting "
-                        :done "done "))}
-     title]))
+  [{:keys [todo on-save]}]
+  (let [{:keys [id title status]} todo
+        checkval (r/atom "")
+        editing (r/atom false)
+        itemval (r/atom "")
+        stop #(swap! editing "false")
+        save #(let [v (-> @itemval str clojure.string/trim)]
+                (when (seq v) (on-save v)
+                              (stop)))
+        ]
+    (fn []
+      [re-com/h-box
+       :gap "1em"
+       :children [
+                  [:input.toggle
+                   {:type     "checkbox"
+                    :value    @checkval
+                    :on-click #(dispatch [:toggle-todo-done id])}]
+                  (when @editing
+                    ([:input
+                      {:type        "text"
+                       :value       title
+                       :on-change   #(reset! itemval (-> % .-target .-value))
+                       :on-blur     (save)
+                       :on-key-down #(case (.-which %)
+                                       13 (save)
+                                       27 (stop)
+                                       nil)}]))
+                  [:li
+                   {:class    (str (case status :active "active " :waiting "waiting " :done "done "))
+                    :on-double-click #(reset! editing true)}
+                   title]
+                  [re-com/button
+                   :label "delete"
+                   ;:align :center
+                   :on-click #(dispatch [:delete-todo id])]
+                  ]])))
+
 
 (defn task-list
   []
@@ -41,7 +72,7 @@
         all-complete? @(subscribe [:all-complete?])]
     [:ul#todo-list
      (for [todo visible-todos]
-       ^{:key (:id todo)} [todo-item todo])]))
+       ^{:key (:id todo)} [todo-item {:todo todo :on-save #(dispatch [:update-todo-title %])}])]))
 
 ;; home
 
@@ -49,12 +80,12 @@
   (let [app-name (subscribe [:app-name])]
     (fn []
       [re-com/v-box
-       :gap "1em"
+       :gap "10em"
        :children [
                   [re-com/title
                    :label (str @app-name)
-                   :level :level1]
-                  ]])))
+                   :level :level1]]])))
+
 
 (defn link-to-about-page []
   [re-com/hyperlink-href
@@ -67,9 +98,9 @@
    :children [[home-title]
               [todo-input
                {:on-save #(dispatch [:add-todo %])}]
-              [task-list]
-              ;[link-to-about-page]
-              ]])
+              [task-list]]])
+;[link-to-about-page]
+
 
 ;; about
 

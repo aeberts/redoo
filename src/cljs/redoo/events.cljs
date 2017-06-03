@@ -74,6 +74,22 @@
     (update-in todos [id] assoc :status status)))
 
 (reg-event-db
+  :toggle-todo-done
+  todo-interceptors
+  (fn [todos [id]]
+    (if (= (:status (todos id)) :active)
+      (update-in todos [id] assoc :status :done)
+      (update-in todos [id] assoc :status :active))
+    ))
+
+(reg-event-db
+  :update-todo-title
+  todo-interceptors
+  (fn [todos [id text]]
+    (update-in todos [id] assoc :title text)
+    ))
+
+(reg-event-db
   :delete-all-todos
   (fn [db _]
     (-> db
@@ -83,3 +99,4 @@
   :set-active-panel
   (fn [db [_ active-panel]]
     (assoc db :active-panel active-panel)))
+

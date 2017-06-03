@@ -24,8 +24,9 @@
 (defn ^:export init []
   (routes/app-routes)
   (dispatch-sync [:initialise-db])
-  ;; Fixme : only run when db has no items and debug is true
-  (run! #(dispatch-sync [:add-todo %]) db/fixtures)
+  ;; Only insert fixtures when there are no todos in the appdb
+  (when (empty? (:todos @re-frame.db/app-db))
+    (run! #(dispatch-sync [:add-todo %]) db/fixtures))
   (dev-setup)
   (mount-root))
 

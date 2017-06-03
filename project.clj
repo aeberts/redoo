@@ -27,8 +27,8 @@
 
   :figwheel {:css-dirs ["resources/public/css"]
              :ring-handler redoo.handler/dev-handler
-             :open-file-command "open-in-intellij"
-             }
+             :open-file-command "open-in-intellij"}
+
 
   :garden {:builds [{:id           "screen"
                      :source-paths ["src/clj"]
@@ -45,11 +45,11 @@
                    [com.cemerick/piggieback "0.2.1"]
                    [org.clojure/tools.nrepl "0.2.10"]
                    [figwheel-sidecar "0.5.6"]]
-    :plugins      [
+    :plugins      []
                    ;[lein-figwheel "0.5.7"]
-                   ]
-    :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]
-                   }}}
+
+    :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}}}
+
 
   :cljsbuild
   {:builds
@@ -62,8 +62,8 @@
                     :asset-path           "js/compiled/out"
                     :source-map-timestamp true
                     :preloads             [devtools.preload]
-                    :external-config      {:devtools/config {:features-to-install :all}}
-                    }}
+                    :external-config      {:devtools/config {:features-to-install :all}}}}
+
 
     {:id           "min"
      :source-paths ["src/cljs" "script"]
@@ -72,10 +72,10 @@
                     :output-to       "resources/public/js/compiled/app.js"
                     :optimizations   :advanced
                     :closure-defines {goog.DEBUG false}
-                    :pretty-print    false}}
+                    :pretty-print    false}}]}
 
 
-    ]}
+
 
   :main redoo.server
 
@@ -83,5 +83,5 @@
 
   :uberjar-name "redoo.jar"
 
-  :prep-tasks [["cljsbuild" "once" "min"]["garden" "once"]["less" "once"] "compile"]
-  )
+  :prep-tasks [["cljsbuild" "once" "min"]["garden" "once"]["less" "once"] "compile"])
+

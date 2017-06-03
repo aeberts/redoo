@@ -52,5 +52,4 @@
     (assoc cofx :local-store-todos
                 (into (sorted-map)
                       (some->> (.getItem js/localStorage ls-key)
-                               (cljs.reader/read-string)       ;; stored as an EDN map.
-                               )))))
+                               (cljs.reader/read-string))))))       ;; stored as an EDN map.
