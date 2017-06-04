@@ -40,6 +40,7 @@
     (fn []
       [re-com/h-box
        :gap "1em"
+       :align :center
        :children [
                   [:input.toggle
                    {:type     "checkbox"
@@ -59,9 +60,10 @@
                    {:class    (str (case status :active "active " :waiting "waiting " :done "done "))
                     :on-double-click #(reset! editing true)}
                    title]
+                  [re-com/gap
+                   :size "1"]
                   [re-com/button
                    :label "delete"
-                   ;:align :center
                    :on-click #(dispatch [:delete-todo id])]
                   ]])))
 
@@ -80,7 +82,6 @@
   (let [app-name (subscribe [:app-name])]
     (fn []
       [re-com/v-box
-       :gap "10em"
        :children [
                   [re-com/title
                    :label (str @app-name)
@@ -93,14 +94,19 @@
    :href "#/about"])
 
 (defn home-panel []
-  [re-com/v-box
-   :gap "1em"
-   :children [[home-title]
-              [todo-input
-               {:on-save #(dispatch [:add-todo %])}]
-              [task-list]]])
-;[link-to-about-page]
-
+  [re-com/h-box
+   :justify :center
+   :children [[re-com/gap
+               :size "20px"]
+              [re-com/v-box
+               :size "0 1 700px"
+               :gap "1em"
+               :children [[home-title]
+                          [todo-input
+                           {:on-save #(dispatch [:add-todo %])}]
+                          [task-list]]]
+              [re-com/gap
+               :size "20px"]]])
 
 ;; about
 
