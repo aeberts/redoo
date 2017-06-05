@@ -8,7 +8,7 @@
 ;; Main input box to add todos
 ;; The widget takes care of managing state
 ;; The caller (in this case [home-panel] defines what event handlers are dispatched
-(defn todo-input
+(defn new-todo-input
   [{:keys [on-save]}]
   (let [val (r/atom "")
         stop #(reset! val "")
@@ -26,45 +26,62 @@
                         27 (stop)
                         nil)}])))
 
+(defn todo-input
+  [{:keys [on-save on-stop]}]
+  (let [stop on-stop
+        save on-save
+        itemval (r/atom "")]
+
+    (fn []
+      [:input
+       {:class       "edit"
+        :on-change   #(reset! itemval (-> % .-target .-value))
+        :on-blur     (save)
+        :on-key-down #(case (.-which %)
+                        13 (save)
+                        27 (stop)
+                        nil)}])))
+
 (defn todo-item
-  [{:keys [todo on-save]}]
-  (let [{:keys [id title status]} todo
+  []
+  (let [
         checkval (r/atom "")
         editing (r/atom false)
         itemval (r/atom "")
-        stop #(swap! editing "false")
-        save #(let [v (-> @itemval str clojure.string/trim)]
-                (when (seq v) (on-save v)
-                              (stop)))
         ]
-    (fn []
+    (fn [{:keys [id title status]}]
       [re-com/h-box
        :gap "1em"
        :align :center
        :children [
-                  [:input.toggle
-                   {:type     "checkbox"
-                    :value    @checkval
-                    :on-click #(dispatch [:toggle-todo-done id])}]
-                  (when @editing
-                    ([:input
-                      {:type        "text"
-                       :value       title
-                       :on-change   #(reset! itemval (-> % .-target .-value))
-                       :on-blur     (save)
-                       :on-key-down #(case (.-which %)
-                                       13 (save)
-                                       27 (stop)
-                                       nil)}]))
                   [:li
-                   {:class    (str (case status :active "active " :waiting "waiting " :done "done "))
-                    :on-double-click #(reset! editing true)}
-                   title]
+                   {:class
+                    (str "todoitem "
+                         (case status :done "done "
+                                      :waiting "waiting "
+                                      :active "active ")
+                         (when @editing "hide "))
+                    }
+                   [:input.toggle
+                    {:type     "checkbox"
+                     :value    @checkval
+                     :on-click #(dispatch [:toggle-todo-done id])}]
+                   [:label
+                    {:on-double-click #(reset! editing true)}
+                    title]
+                   [re-com/button
+                    :label "delete"
+                    :on-click #(dispatch [:delete-todo id])]
+                   ]
+                  (when @editing
+                    [:todo-input
+                     {:class   "edit"
+                      :on-save #(dispatch [:update-todo-title id %])
+                      :on-stop #(reset! editing false)}
+                     ])
                   [re-com/gap
                    :size "1"]
-                  [re-com/button
-                   :label "delete"
-                   :on-click #(dispatch [:delete-todo id])]
+
                   ]])))
 
 
@@ -74,7 +91,7 @@
         all-complete? @(subscribe [:all-complete?])]
     [:ul#todo-list
      (for [todo visible-todos]
-       ^{:key (:id todo)} [todo-item {:todo todo :on-save #(dispatch [:update-todo-title %])}])]))
+       ^{:key (:id todo)} [todo-item todo])]))
 
 ;; home
 
@@ -102,7 +119,7 @@
                :size "0 1 700px"
                :gap "1em"
                :children [[home-title]
-                          [todo-input
+                          [new-todo-input
                            {:on-save #(dispatch [:add-todo %])}]
                           [task-list]]]
               [re-com/gap
