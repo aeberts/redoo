@@ -30,11 +30,12 @@
   [{:keys [on-save on-stop]}]
   (let [stop on-stop
         save on-save
-        itemval (r/atom "")]
+        itemval (r/atom "foo")]
 
     (fn []
-      [:input
-       {:class       "edit"
+      [re-com/input-text
+       {:model       itemval
+        :class       "edit"
         :on-change   #(reset! itemval (-> % .-target .-value))
         :on-blur     (save)
         :on-key-down #(case (.-which %)
@@ -43,9 +44,12 @@
                         nil)}])))
 
 (defn todo-item
-  []
+  [{:keys [id title status]}]
   (let [
-        checkval (r/atom "")
+        checkval (case status
+                   :active (r/atom false)
+                   :done (r/atom true)
+                   :waiting (r/atom true))
         editing (r/atom false)
         itemval (r/atom "")
         ]
@@ -53,45 +57,42 @@
       [re-com/h-box
        :gap "1em"
        :align :center
-       :children [
-                  [:li
-                   {:class
-                    (str "todoitem "
-                         (case status :done "done "
-                                      :waiting "waiting "
-                                      :active "active ")
-                         (when @editing "hide "))
-                    }
-                   [:input.toggle
-                    {:type     "checkbox"
-                     :value    @checkval
-                     :on-click #(dispatch [:toggle-todo-done id])}]
-                   [:label
-                    {:on-double-click #(reset! editing true)}
-                    title]
-                   [re-com/button
-                    :label "delete"
-                    :on-click #(dispatch [:delete-todo id])]
-                   ]
-                  (when @editing
-                    [:todo-input
-                     {:class   "edit"
-                      :on-save #(dispatch [:update-todo-title id %])
-                      :on-stop #(reset! editing false)}
-                     ])
-                  [re-com/gap
-                   :size "1"]
+       :children
+       [
+        [re-com/checkbox
+         :model checkval
+         :on-change #(dispatch [:toggle-todo-done id])]
+        [:label
+         {:on-double-click #(reset! editing true)
+          :class           (str "itemtitle "
+                             (case status :done "done "
+                                          :waiting "waiting "
+                                          :active "active "))}
+         title]
+        (when @editing
+          [:todo-input
+           {
+            :on-save #(dispatch [:update-todo-title id %])
+            :on-stop #(reset! editing false)}
+           ])
+        [re-com/button
+         :label "delete"
+         :on-click #(dispatch [:delete-todo id])]
+        [re-com/gap
+         :size "1"]
 
-                  ]])))
+        ]])))
 
 
 (defn task-list
   []
   (let [visible-todos @(subscribe [:visible-todos])
         all-complete? @(subscribe [:all-complete?])]
-    [:ul#todo-list
-     (for [todo visible-todos]
-       ^{:key (:id todo)} [todo-item todo])]))
+    [re-com/v-box
+     :class "todo-list"
+     :children [
+                (for [todo visible-todos]
+                  ^{:key (:id todo)} [todo-item todo])]]))
 
 ;; home
 
