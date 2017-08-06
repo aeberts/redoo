@@ -75,11 +75,11 @@
             :on-save #(dispatch [:update-todo-title id %])
             :on-stop #(reset! editing false)}
            ])
+        [re-com/gap
+         :size "auto"]
         [re-com/button
          :label "delete"
          :on-click #(dispatch [:delete-todo id])]
-        [re-com/gap
-         :size "1"]
 
         ]])))
 
@@ -90,6 +90,7 @@
         all-complete? @(subscribe [:all-complete?])]
     [re-com/v-box
      :class "todo-list"
+     :size "auto"
      :children [
                 (for [todo visible-todos]
                   ^{:key (:id todo)} [todo-item todo])]]))
