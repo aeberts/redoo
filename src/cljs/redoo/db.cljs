@@ -1,6 +1,6 @@
 (ns redoo.db
   (:require [cljs.reader]
-            [cljs.spec :as s]
+            [cljs.spec.alpha :as s]
             [re-frame.core :as re-frame]))
 
 (s/def ::id int?)

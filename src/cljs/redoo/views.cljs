@@ -1,7 +1,7 @@
 (ns redoo.views
   (:require [reagent.core :as r]
             [re-frame.core :as re-frame :refer [subscribe dispatch]]
-            [re-com.core :as re-com]))
+            [re-com.core :as rc]))
 
 ;; Todos
 
@@ -33,7 +33,7 @@
         itemval (r/atom "foo")]
 
     (fn []
-      [re-com/input-text
+      [rc/input-text
        {:model       itemval
         :class       "edit"
         :on-change   #(reset! itemval (-> % .-target .-value))
@@ -45,50 +45,40 @@
 
 (defn todo-item
   [{:keys [id title status]}]
-  (let [
-        checkval (case status
-                   :active (r/atom false)
-                   :done (r/atom true)
-                   :waiting (r/atom true))
+  (let [checked? (r/atom (case status
+                           :active false
+                           :done true
+                           :waiting false))
         editing (r/atom false)
-        itemval (r/atom "")
-        ]
+        itemval (r/atom "")]
     (fn [{:keys [id title status]}]
-      [re-com/h-box
+      [rc/h-box
        :gap "1em"
        :align :center
-       :children
-       [
-        [re-com/checkbox
-         :model checkval
-         :on-change #(dispatch [:toggle-todo-done id])]
-        [:label
-         {:on-double-click #(reset! editing true)
-          :class           (str "itemtitle "
-                             (case status :done "done "
-                                          :waiting "waiting "
-                                          :active "active "))}
-         title]
-        (when @editing
-          [:todo-input
-           {
-            :on-save #(dispatch [:update-todo-title id %])
-            :on-stop #(reset! editing false)}
-           ])
-        [re-com/gap
-         :size "auto"]
-        [re-com/button
-         :label "delete"
-         :on-click #(dispatch [:delete-todo id])]
-
-        ]])))
+       :children [[rc/checkbox
+                   :model checked?
+                   :on-change #(dispatch [:toggle-todo-done id])]
+                  [:label
+                   {:on-double-click #(reset! editing true)
+                    :class           (str "itemtitle " (case status :done "done " :waiting "waiting " :active "active "))}
+                   title]
+                  (when @editing
+                    [:todo-input
+                     :on-save #(dispatch [:update-todo-title id %])
+                     :on-stop #(reset! editing false)])
+                  [rc/gap
+                   :size "auto"]
+                  [rc/button
+                   :label "delete"
+                   :on-click #(dispatch [:delete-todo id])]
+                  ]])))
 
 
 (defn task-list
   []
   (let [visible-todos @(subscribe [:visible-todos])
         all-complete? @(subscribe [:all-complete?])]
-    [re-com/v-box
+    [rc/v-box
      :class "todo-list"
      :size "auto"
      :children [
@@ -100,47 +90,47 @@
 (defn home-title []
   (let [app-name (subscribe [:app-name])]
     (fn []
-      [re-com/v-box
+      [rc/v-box
        :children [
-                  [re-com/title
+                  [rc/title
                    :label (str @app-name)
                    :level :level1]]])))
 
 
 (defn link-to-about-page []
-  [re-com/hyperlink-href
+  [rc/hyperlink-href
    :label "go to About Page"
    :href "#/about"])
 
 (defn home-panel []
-  [re-com/h-box
+  [rc/h-box
    :justify :center
-   :children [[re-com/gap
+   :children [[rc/gap
                :size "20px"]
-              [re-com/v-box
+              [rc/v-box
                :size "0 1 700px"
                :gap "1em"
                :children [[home-title]
                           [new-todo-input
                            {:on-save #(dispatch [:add-todo %])}]
                           [task-list]]]
-              [re-com/gap
+              [rc/gap
                :size "20px"]]])
 
 ;; about
 
 (defn about-title []
-  [re-com/title
+  [rc/title
    :label "This is the About Page."
    :level :level1])
 
 (defn link-to-home-page []
-  [re-com/hyperlink-href
+  [rc/hyperlink-href
    :label "go to Home Page"
    :href "#/"])
 
 (defn about-panel []
-  [re-com/v-box
+  [rc/v-box
    :gap "1em"
    :children [[about-title] [link-to-home-page]]])
 
@@ -159,6 +149,6 @@
 (defn main-panel []
   (let [active-panel (subscribe [:active-panel])]
     (fn []
-      [re-com/v-box
+      [rc/v-box
        :height "100%"
        :children [[panels @active-panel]]])))

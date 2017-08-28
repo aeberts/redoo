@@ -1,7 +1,7 @@
 (ns redoo.events
   (:require [re-frame.core :as re-frame :refer [reg-event-db after path trim-v debug reg-event-fx inject-cofx]]
             [redoo.db :as db :refer [default-value todos->local-store]]
-            [cljs.spec :as s]))
+            [cljs.spec.alpha :as s]))
 
 ;; Interceptors
 
@@ -57,7 +57,7 @@
     (let [id (allocate-next-id todos)]
       (assoc todos id {:id id :title text :status :active}))))
 
-;; Todo Make delete-todo take multiple ids
+;; Todo: Make delete-todo take multiple ids
 (reg-event-db
   :delete-todo
   todo-interceptors
