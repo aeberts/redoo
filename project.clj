@@ -6,7 +6,7 @@
                  [re-frame "0.9.2"]
                  [re-frisk "0.4.5"]
                  [org.clojure/core.async "0.3.443"]
-                 [re-com "0.8.3"]
+                 [re-com "0.9.0"]
                  [secretary "1.2.3"]
                  [garden "1.3.2"]
                  [ns-tracker "0.3.0"]

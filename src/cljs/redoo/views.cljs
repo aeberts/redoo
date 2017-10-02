@@ -1,6 +1,7 @@
 (ns redoo.views
   (:require [reagent.core :as r]
             [re-frame.core :as re-frame :refer [subscribe dispatch]]
+            [re-frame.loggers :refer [console]]
             [re-com.core :as rc]))
 
 ;; Todos
@@ -13,65 +14,64 @@
   (let [val (r/atom "")
         stop #(reset! val "")
         save #(let [v (-> @val str clojure.string/trim)]
-                (when (seq v) (on-save v)
-                              (stop)))]
-    (fn []
-      [:input
-       {:type        "text"
-        :value       @val
-        :on-blur     save
-        :on-change   #(reset! val (-> % .-target .-value))
-        :on-key-down #(case (.-which %)
-                        13 (save)
-                        27 (stop)
-                        nil)}])))
-
-(defn todo-input
-  [{:keys [on-save on-stop]}]
-  (let [stop on-stop
-        save on-save
-        itemval (r/atom "foo")]
-
+                (when (seq v) (on-save v))
+                (stop))]
     (fn []
       [rc/input-text
-       {:model       itemval
-        :class       "edit"
-        :on-change   #(reset! itemval (-> % .-target .-value))
-        :on-blur     (save)
-        :on-key-down #(case (.-which %)
-                        13 (save)
-                        27 (stop)
-                        nil)}])))
+       :model       val
+       :placeholder "Enter a new todo"
+       :on-change   #(do (reset! val %)
+                         (save))
+       :change-on-blur? true])))
+
+(defn todo-edit
+  [{:keys [title on-save on-stop]}]
+  (let [editval (r/atom (str title))
+        stop #(do (reset! editval "")
+                  (when on-stop (on-stop)))
+        save #(let [v (-> @editval str clojure.string/trim)]
+                (when (seq v) (on-save v))
+                (stop))]
+    (fn []
+      [rc/h-box
+       :children
+       [[rc/input-text
+         :model editval
+         :class "edit"
+         :placeholder @editval
+         :on-change #(do (reset! editval %)
+                         (save))
+         :change-on-blur? true]]])))
 
 (defn todo-item
   [{:keys [id title status]}]
-  (let [checked? (r/atom (case status
-                           :active false
-                           :done true
-                           :waiting false))
-        editing (r/atom false)
+  (let [editing (r/atom false)
         itemval (r/atom "")]
     (fn [{:keys [id title status]}]
-      [rc/h-box
-       :gap "1em"
-       :align :center
-       :children [[rc/checkbox
-                   :model checked?
-                   :on-change #(dispatch [:toggle-todo-done id])]
-                  [:label
-                   {:on-double-click #(reset! editing true)
-                    :class           (str "itemtitle " (case status :done "done " :waiting "waiting " :active "active "))}
-                   title]
-                  (when @editing
-                    [:todo-input
-                     :on-save #(dispatch [:update-todo-title id %])
-                     :on-stop #(reset! editing false)])
-                  [rc/gap
-                   :size "auto"]
-                  [rc/button
-                   :label "delete"
-                   :on-click #(dispatch [:delete-todo id])]
-                  ]])))
+      (let [checked? (r/atom (case status :active false :done true :waiting false))]
+        [rc/h-box
+         :gap "1em"
+         :align :center
+         :children
+         [[rc/checkbox
+           :model checked?
+           :on-change #(dispatch [:toggle-todo-done id])]
+          [rc/label
+           :on-click #(reset! editing true)
+           :class (str "itemtitle " (case status :done "done " :waiting "waiting " :active "active "))
+           :label title]
+          (when @editing
+            [todo-edit
+             {:title title
+              :on-save #(dispatch [:update-todo-title id %])
+              :on-stop #(reset! editing false)}
+             ])
+          [rc/gap
+           :size "auto"]
+          [rc/button
+           :label "delete"
+           :on-click #(dispatch [:delete-todo id])]
+          ]]))))
 
 
 (defn task-list
@@ -103,19 +103,26 @@
    :href "#/about"])
 
 (defn home-panel []
-  [rc/h-box
-   :justify :center
-   :children [[rc/gap
-               :size "20px"]
-              [rc/v-box
-               :size "0 1 700px"
-               :gap "1em"
-               :children [[home-title]
-                          [new-todo-input
-                           {:on-save #(dispatch [:add-todo %])}]
-                          [task-list]]]
-              [rc/gap
-               :size "20px"]]])
+  (let [textval (r/atom "")]
+    [rc/h-box
+     :justify :center
+     :children [[rc/gap
+                 :size "20px"]
+                [rc/v-box
+                 :size "0 1 700px"
+                 :gap "1em"
+                 :children [[home-title]
+                            [new-todo-input
+                             {:on-save #(dispatch [:add-todo %])}]
+                            [task-list]
+                            ;[rc/input-text
+                            ; :model textval
+                            ; :placeholder "Enter some text"
+                            ; :on-change #(do (reset! textval %)
+                            ;                 (console :log (str "textval is " @textval)))]
+                            ]]
+                [rc/gap
+                 :size "20px"]]]))
 
 ;; about
 
