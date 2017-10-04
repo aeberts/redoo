@@ -18,10 +18,10 @@
                 (stop))]
     (fn []
       [rc/input-text
-       :model       val
+       :model val
        :placeholder "Enter a new todo"
-       :on-change   #(do (reset! val %)
-                         (save))
+       :on-change #(do (reset! val %)
+                       (save))
        :change-on-blur? true])))
 
 (defn todo-edit
@@ -52,27 +52,33 @@
         [rc/h-box
          :gap "1em"
          :align :center
-         :children
-         [[rc/checkbox
-           :model checked?
-           :on-change #(dispatch [:toggle-todo-done id])]
-          [rc/label
-           :on-click #(reset! editing true)
-           :class (str "itemtitle " (case status :done "done " :waiting "waiting " :active "active "))
-           :label title]
+         :children [
+          [rc/h-box
+           :class (when @editing "hidden")
+           :gap "1em"
+           :align :center
+           :children [
+                      [rc/checkbox
+                       :model checked?
+                       :on-change #(dispatch [:toggle-todo-done id])]
+                      [rc/label
+                       :on-click #(reset! editing true)
+                       :class (str "itemtitle " (case status :done "done " :waiting "waiting " :active "active "))
+                       :label title]
+                      [rc/gap
+                       :size "auto"]
+                      [rc/button
+                       :label "Delete"
+                       :on-click #(dispatch [:delete-todo id])]]
+           ]
           (when @editing
-            [todo-edit
-             {:title title
-              :on-save #(dispatch [:update-todo-title id %])
-              :on-stop #(reset! editing false)}
-             ])
-          [rc/gap
-           :size "auto"]
-          [rc/button
-           :label "delete"
-           :on-click #(dispatch [:delete-todo id])]
-          ]]))))
-
+            [rc/h-box
+             :children [
+                        [todo-edit
+                         {:title   title
+                          :on-save #(dispatch [:update-todo-title id %])
+                          :on-stop #(reset! editing false)}
+                         ]]])]]))))
 
 (defn task-list
   []
