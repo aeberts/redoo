@@ -42,6 +42,12 @@ https://github.com/binaryage/dirac/blob/master/docs/integration.md
 Dirac-sample:
 https://github.com/binaryage/dirac-sample
 
+General Info on compiling cljs:
+https://clojurescript.org/guides/quick-start
+
+Compiling cljs using tools:
+https://funcool.github.io/clojurescript-unraveled/#tooling-compiler
+
 CLJS Compiler Options:
 https://github.com/clojure/clojurescript-site/blob/1c3e4d25cea7ce600071f803c2e5cef5b3fb27a1/content/reference/compiler-options.adoc
 
@@ -53,6 +59,8 @@ https://github.com/bhauman/lein-figwheel/wiki/Using-the-Figwheel-REPL-within-NRe
 
 Shared compiler build options:
 https://github.com/emezeske/lein-cljsbuild/issues/444
+
+
 
 ## These are probably mostly broken now:
 
