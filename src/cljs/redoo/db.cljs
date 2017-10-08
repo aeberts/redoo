@@ -26,7 +26,15 @@
   ["Add fixtures to the db"
    "Add text box using re-com to enter data"
    "Add check box to todo items"
-   "Mark completed items with strike through"])
+   "Mark completed items with strike through"
+   "Setup tracing with Clairvoyant"
+   "Fix spacing of delete button"
+   "Clear todo box after adding todo"
+   "Add 'archive done' button"
+   "Make 'todo entry' span full width"
+   "Demo dirac tools"
+   "Setup dirac tools with Intellij"
+   ])
 
 ;; -- Local Storage  ----------------------------------------------------------
 ;;

@@ -46,7 +46,7 @@
                    [org.clojure/tools.nrepl "0.2.10"]
                    [figwheel-sidecar "0.5.13"]]
     :plugins      []
-                   ;[lein-figwheel "0.5.7"]
+    ;[lein-figwheel "0.5.7"]
 
     :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}}}
 
@@ -84,4 +84,3 @@
   :uberjar-name "redoo.jar"
 
   :prep-tasks [["cljsbuild" "once" "min"]["garden" "once"]["less" "once"] "compile"])
-

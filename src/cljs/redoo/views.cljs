@@ -14,8 +14,8 @@
   (let [val (r/atom "")
         stop #(reset! val "")
         save #(let [v (-> @val str clojure.string/trim)]
-                (when (seq v) (on-save v))
-                (stop))]
+               (when (seq v) (on-save v))
+               (stop))]
     (fn []
       [rc/input-text
        :model val
@@ -30,8 +30,8 @@
         stop #(do (reset! editval "")
                   (when on-stop (on-stop)))
         save #(let [v (-> @editval str clojure.string/trim)]
-                (when (seq v) (on-save v))
-                (stop))]
+               (when (seq v) (on-save v))
+               (stop))]
     (fn []
       [rc/h-box
        :children
@@ -52,33 +52,35 @@
         [rc/h-box
          :gap "1em"
          :align :center
-         :children [
+         :children
+         [
           [rc/h-box
            :class (when @editing "hidden")
            :gap "1em"
            :align :center
-           :children [
-                      [rc/checkbox
-                       :model checked?
-                       :on-change #(dispatch [:toggle-todo-done id])]
-                      [rc/label
-                       :on-click #(reset! editing true)
-                       :class (str "itemtitle " (case status :done "done " :waiting "waiting " :active "active "))
-                       :label title]
-                      [rc/gap
-                       :size "auto"]
-                      [rc/button
-                       :label "Delete"
-                       :on-click #(dispatch [:delete-todo id])]]
+           :children
+           [
+            [rc/checkbox
+             :model checked?
+             :on-change #(dispatch [:toggle-todo-done id])]
+            [rc/label
+             :on-click #(reset! editing true)
+             :class (str "itemtitle " (case status :done "done " :waiting "waiting " :active "active "))
+             :label title]
+            [rc/gap
+             :size "auto"]
+            [rc/button
+             :label "Delete"
+             :on-click #(dispatch [:delete-todo id])]]
            ]
-          (when @editing
-            [rc/h-box
-             :children [
-                        [todo-edit
-                         {:title   title
-                          :on-save #(dispatch [:update-todo-title id %])
-                          :on-stop #(reset! editing false)}
-                         ]]])]]))))
+            (when @editing
+              [rc/h-box
+               :children [
+                [todo-edit
+                 {:title   title
+                  :on-save #(dispatch [:update-todo-title id %])
+                  :on-stop #(reset! editing false)}
+                 ]]])]]))))
 
 (defn task-list
   []
@@ -121,11 +123,6 @@
                             [new-todo-input
                              {:on-save #(dispatch [:add-todo %])}]
                             [task-list]
-                            ;[rc/input-text
-                            ; :model textval
-                            ; :placeholder "Enter some text"
-                            ; :on-change #(do (reset! textval %)
-                            ;                 (console :log (str "textval is " @textval)))]
                             ]]
                 [rc/gap
                  :size "20px"]]]))
@@ -146,7 +143,6 @@
   [rc/v-box
    :gap "1em"
    :children [[about-title] [link-to-home-page]]])
-
 
 ;; main
 
