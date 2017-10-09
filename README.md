@@ -96,12 +96,17 @@ lein less auto
 
 ```
 lein clean
-lein figwheel dev
+lien repl dev
+
+(Old: lein figwheel dev)
 ```
 
 Figwheel will automatically push cljs changes to the browser.
 
-Wait a bit, then browse to [http://localhost:3449](http://localhost:3449).
+Wait a bit, then browse to [http://localhost:7111](http://localhost:7111).
+
+
+Old: Wait a bit, then browse to [http://localhost:3449](http://localhost:3449).
 
 ## Production Build
 
