@@ -14,15 +14,17 @@
   (let [val (r/atom "")
         stop #(reset! val "")
         save #(let [v (-> @val str clojure.string/trim)]
-               (when (seq v) (on-save v))
-               (stop))]
+                (when (seq v) (on-save v))
+                (stop))]
     (fn []
-      [rc/input-text
-       :model val
-       :placeholder "Enter a new todo"
-       :on-change #(do (reset! val %)
-                       (save))
-       :change-on-blur? true])))
+      [rc/box
+       :size "auto"
+       :child [rc/input-text
+               :model val
+               :placeholder "Enter a new todo"
+               :on-change #(do (reset! val %)
+                               (save))
+               :change-on-blur? true]])))
 
 (defn todo-edit
   [{:keys [title on-save on-stop]}]
@@ -30,8 +32,8 @@
         stop #(do (reset! editval "")
                   (when on-stop (on-stop)))
         save #(let [v (-> @editval str clojure.string/trim)]
-               (when (seq v) (on-save v))
-               (stop))]
+                (when (seq v) (on-save v))
+                (stop))]
     (fn []
       [rc/h-box
        :children
@@ -51,11 +53,13 @@
       (let [checked? (r/atom (case status :active false :done true :waiting false))]
         [rc/h-box
          :gap "1em"
+         :size "auto"
          :align :center
          :children
          [
           [rc/h-box
            :class (when @editing "hidden")
+           :size "auto"
            :gap "1em"
            :align :center
            :children
@@ -69,18 +73,21 @@
              :label title]
             [rc/gap
              :size "auto"]
-            [rc/button
-             :label "Delete"
-             :on-click #(dispatch [:delete-todo id])]]
+            [rc/box
+             :size "auto"
+             :justify :end
+             :child [rc/button
+                     :label "Delete"
+                     :on-click #(dispatch [:delete-todo id])]]]
            ]
-            (when @editing
-              [rc/h-box
-               :children [
-                [todo-edit
-                 {:title   title
-                  :on-save #(dispatch [:update-todo-title id %])
-                  :on-stop #(reset! editing false)}
-                 ]]])]]))))
+          (when @editing
+            [rc/h-box
+             :children [
+                        [todo-edit
+                         {:title   title
+                          :on-save #(dispatch [:update-todo-title id %])
+                          :on-stop #(reset! editing false)}
+                         ]]])]]))))
 
 (defn task-list
   []
@@ -99,6 +106,7 @@
   (let [app-name (subscribe [:app-name])]
     (fn []
       [rc/v-box
+       :size "auto"
        :children [
                   [rc/title
                    :label (str @app-name)
