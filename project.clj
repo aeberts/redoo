@@ -4,12 +4,17 @@
 ;
 ; For Dirac to work on your local machine you will need the following ingredients:
 ;
-; 1) Dirac Chrome Extension installed in your Chrome Canary
+; 1) Dirac Chrome Extension installed in your Chrome Canary (not to self: run with `devchrome`)
 ; 2) Dirac Runtime - a ClojureScript library installed in your page
 ; 3) nREPL server with Dirac nREPL middleware
 ; 4) Dirac Agent - a helper server providing a proxy tunnel between the nREPL server and the Dirac Extension
 ;
 ; This project uses the figwheel development server to serve files.
+;
+; Use `lein figwheel` to start the development server (no production server has been defined).
+;
+; If you're using Cursive to connect to a the running nrepl server see this guide:
+; https://github.com/binaryage/dirac/blob/master/docs/integration.md
 
 (defproject redoo "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.9.0-beta2"]
