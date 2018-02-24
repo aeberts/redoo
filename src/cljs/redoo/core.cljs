@@ -1,5 +1,7 @@
 (ns redoo.core
-    (:require [reagent.core :as reagent]
+    (:require [dirac.runtime :as dirac]
+              [devtools.core :as devtools]
+              [reagent.core :as reagent]
               [re-frame.core :as re-frame :refer [dispatch-sync dispatch]]
               [re-frisk.core :refer [enable-re-frisk!]]
               [redoo.events]
@@ -14,7 +16,9 @@
   (when config/debug?
     (enable-console-print!)
     (enable-re-frisk!)
-    (println "dev mode")))
+    (println "dev mode")
+    (devtools/install!)
+    (dirac/install!)))
 
 (defn mount-root []
   (re-frame/clear-subscription-cache!)
@@ -29,4 +33,3 @@
     (run! #(dispatch-sync [:add-todo %]) db/fixtures))
   (dev-setup)
   (mount-root))
-

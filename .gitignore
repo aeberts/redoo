@@ -1,8 +1,12 @@
 /*.log
 /target
-/*-init.clj
+# /*-init.clj
 /resources/public/js/compiled
 out
 /.idea/*
 *.iml
 *.css
+/.lein-repl-history
+.figwheel/
+.lein-repl-history
+resources/public/compiled/*

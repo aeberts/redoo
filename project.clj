@@ -4,14 +4,21 @@
 ;
 ; For Dirac to work on your local machine you will need the following ingredients:
 ;
-; 1) Dirac Chrome Extension installed in your Chrome Canary (not to self: run with `devchrome`)
+; 1) Dirac Chrome Extension installed in your Chrome Canary (note to self: run with `devchrome`)
 ; 2) Dirac Runtime - a ClojureScript library installed in your page
 ; 3) nREPL server with Dirac nREPL middleware
 ; 4) Dirac Agent - a helper server providing a proxy tunnel between the nREPL server and the Dirac Extension
 ;
-; This project uses the figwheel development server to serve files.
+; This project uses the figwheel development server to serve files (no production server has been defined).
 ;
-; Use `lein figwheel` to start the development server (no production server has been defined).
+; To start the app with Dirac:
+;
+; 1) Start Chrome Canary in Dev mode with devchrome script (with remote debugging enabled)
+; 2) In the project dir use `lein with-profile +dev figwheel` to start the development server and figwheel.
+; 3) In a new terminal window switch to the project dir and use `lein with-profile +dev repl` to start direc agent and repl.
+; 4) In Chrome Canary click the devtools button - Dirac Tools should connect to the Dirac Agent
+; 5) In Cursive, start a remote nrepl and at the repl prompt run the command: `(dirac! :join)` to connect to the cljs process in the browser.
+;
 ;
 ; If you're using Cursive to connect to a the running nrepl server see this guide:
 ; https://github.com/binaryage/dirac/blob/master/docs/integration.md
@@ -104,7 +111,8 @@
              {
               :dependencies [
                              [binaryage/devtools "0.9.4"]
-                             [binaryage/dirac "1.2.17" :exclusions [binaryage/env-config]]
+                             [binaryage/dirac "RELEASE"]
+                             ;[binaryage/dirac "RELEASE" :exclusions [binaryage/env-config]]
                              [figwheel "0.5.14"]
                              [com.cemerick/piggieback "0.2.1"]
                              [org.clojure/tools.nrepl "0.2.13"]
@@ -112,7 +120,7 @@
                              [clj-logging-config "1.9.12"]
                              ]
               :plugins      [
-                             ;[lein-figwheel "0.5.14"]
+                             [lein-figwheel "0.5.14"]
                              ]
               :repl-options {
                              :port             8230
@@ -157,7 +165,7 @@
                                                                         ]})
                                                  (println "Preparing to boot dirac.agent")
                                                  (dirac.agent/boot!)
-                                                 (cljs-repl)
+                                                 ;(cljs-repl)
                                                  )
                              }}
              :foo
