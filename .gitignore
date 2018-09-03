@@ -12,3 +12,4 @@ out
 .lein-repl-history
 .lein-failures
 resources/public/compiled/*
+.nrepl-port
