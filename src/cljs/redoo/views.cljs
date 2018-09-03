@@ -9,6 +9,8 @@
 ;; Main input box to add todos
 ;; The widget takes care of managing state
 ;; The caller (in this case [home-panel] defines what event handlers are dispatched
+;; call example: [new-todo-input {:on-save #(dispatch [:add-todo %])}]
+
 (defn new-todo-input
   [{:keys [on-save]}]
   (let [val (r/atom "")
@@ -78,16 +80,16 @@
              :justify :end
              :child [rc/button
                      :label "Delete"
-                     :on-click #(dispatch [:delete-todo id])]]]
-           ]
+                     :on-click #(dispatch [:delete-todo id])]]]]
+
           (when @editing
             [rc/h-box
              :children [
                         [todo-edit
                          {:title   title
                           :on-save #(dispatch [:update-todo-title id %])
-                          :on-stop #(reset! editing false)}
-                         ]]])]]))))
+                          :on-stop #(reset! editing false)}]]])]]))))
+
 
 (defn task-list
   []
@@ -130,8 +132,8 @@
                  :children [[home-title]
                             [new-todo-input
                              {:on-save #(dispatch [:add-todo %])}]
-                            [task-list]
-                            ]]
+                            [task-list]]]
+
                 [rc/gap
                  :size "20px"]]]))
 

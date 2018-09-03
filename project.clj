@@ -24,33 +24,34 @@
 ; https://github.com/binaryage/dirac/blob/master/docs/integration.md
 
 (defproject redoo "0.1.0-SNAPSHOT"
-  :dependencies [[org.clojure/clojure "1.9.0-beta2"]
-                 [org.clojure/clojurescript "1.9.946"]
+  :dependencies [[org.clojure/clojure "1.9.0"]
+                 [org.clojure/clojurescript "1.10.339"]
                  [org.clojure/tools.nrepl "0.2.13"]
                  ;[binaryage/devtools "0.9.4"]
                  ;[binaryage/dirac "1.2.17"]
                  ;[figwheel "0.5.14"]
                  ;[figwheel-sidecar "0.5.14" :exclusions [ring/ring-codec joda-time clj-time]]
-                 [reagent "0.8.0-alpha1"]
-                 [re-frame "0.9.2"]
-                 [re-frisk "0.4.5"]
-                 [org.clojure/core.async "0.3.443"]
-                 [re-com "0.9.0"]
+                 [reagent "0.8.1"]
+                 [re-frame "0.10.5"]
+
+                 ;;[re-frisk "0.5.4"]
+                 [org.clojure/core.async "0.4.474"]
+                 [re-com "2.1.0"]
                  [secretary "1.2.3"]
-                 [garden "1.3.3"]
-                 [ns-tracker "0.3.0"]
-                 [compojure "1.5.0"]
-                 [yogthos/config "0.8"]
-                 [ring "1.4.0"]]
+                 [garden "1.3.5"]
+                 [ns-tracker "0.3.1"]
+                 [compojure "1.6.1"]
+                 [yogthos/config "1.1.1"]
+                 [ring "1.6.3"]]
 
   :plugins [[lein-cljsbuild "1.1.7" :exclusions [org.clojure/clojure]]
             [lein-garden "0.2.8" :exclusions [org.clojure/clojure org.apache.commons/commons-compress]]
             [lein-less "1.7.5"]
             [lein-shell "0.4.1"]
             [lein-cooper "1.2.2" :exclusions [org.clojure/clojure]]
-            [lein-figwheel "0.5.14" :exclusions [org.clojure/clojure]]
-            [lein-pprint "1.1.2"]
-            ]
+            [lein-figwheel "0.5.16" :exclusions [org.clojure/clojure]]
+            [lein-pprint "1.1.2"]]
+
 
   :min-lein-version "2.5.3"
 
@@ -67,8 +68,8 @@
              :server-port       7111
              :repl              false
              :server-logfile    ".figwheel/redoo.log"
-             :open-file-command "open-in-intellij"
-             }
+             :open-file-command "open-in-intellij"}
+
 
   ;:garden {:builds [{:id           "screen"
   ;                   :source-paths ["src/clj"]
@@ -85,19 +86,22 @@
      :source-paths ["src/clj" "src/cljs" "script"]
      ; Client side figwheel configs
      :figwheel     {
-                    :on-jsload "redoo.core/mount-root"
-                    }
+                    :on-jsload "redoo.core/mount-root"}
+
      :compiler     {:main                 redoo.core
                     :output-to            "resources/public/js/compiled/app.js"
                     :output-dir           "resources/public/js/compiled/out"
                     :asset-path           "js/compiled/out"
                     :optimizations        :none
                     :source-map-timestamp true
-                    :preloads             [devtools.preload dirac.runtime.preload]
-                    :external-config      {:devtools/config {:features-to-install :all}}
-                    }
+                    :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true
+                                      "day8.re_frame.tracing.trace_enabled_QMARK_"  true}
 
-     }
+                    :preloads             [devtools.preload dirac.runtime.preload day8.re-frame-10x.preload]
+                    :external-config      {:devtools/config {:features-to-install :all}}}}
+
+
+
     {:id           "min"
      :source-paths ["src/clj" "src/cljs" "script"]
      :jar          true
@@ -110,18 +114,21 @@
   :profiles {:dev
              {
               :dependencies [
-                             [binaryage/devtools "0.9.4"]
+                             [binaryage/devtools "0.9.10"]
                              [binaryage/dirac "RELEASE"]
                              ;[binaryage/dirac "RELEASE" :exclusions [binaryage/env-config]]
-                             [figwheel "0.5.14"]
-                             [com.cemerick/piggieback "0.2.1"]
+                             [day8.re-frame/re-frame-10x "0.3.3-react16"]
+                             [day8.re-frame/tracing "0.5.1"]
+                             [figwheel "0.5.16"]
+                             [com.cemerick/piggieback "0.2.2"]
                              [org.clojure/tools.nrepl "0.2.13"]
-                             [figwheel-sidecar "0.5.14" :exclusions [clj-time jota-time]]
-                             [clj-logging-config "1.9.12"]
-                             ]
+                             [figwheel-sidecar "0.5.16" :exclusions [clj-time jota-time]]
+                             [clj-logging-config "1.9.12"]]
+
               :plugins      [
                              [lein-figwheel "0.5.14"]
                              ]
+
               :repl-options {
                              :port             8230
                              :nrepl-middleware [dirac.nrepl/middleware]
@@ -138,8 +145,8 @@
                                                                         :repl              true
                                                                         :ring-handler      redoo.handler/dev-handler
                                                                         :server-logfile    ".figwheel/redoo.log"
-                                                                        :open-file-command "open-in-intellij"
-                                                                        }
+                                                                        :open-file-command "open-in-intellij"}
+
                                                      :build-ids        ["dev"] ;; <-- a vector of build ids to start autobuilding
                                                      :all-builds       [{:id           "dev"
                                                                          :figwheel     {:on-jsload "redoo.core/mount-root"}
@@ -160,14 +167,14 @@
                                                                                         :output-to       "resources/public/js/compiled/app.js"
                                                                                         :optimizations   :advanced
                                                                                         :closure-defines {goog.DEBUG false}
-                                                                                        :pretty-print    false}
-                                                                         }
-                                                                        ]})
+                                                                                        :pretty-print    false}}]})
+
+
                                                  (println "Preparing to boot dirac.agent")
-                                                 (dirac.agent/boot!)
-                                                 ;(cljs-repl)
-                                                 )
-                             }}
+                                                 (dirac.agent/boot!))}}
+             ;(cljs-repl)
+
+
              :foo
              {:repl-options {:port             8230
                              :nrepl-middleware [dirac.nrepl/middleware]
@@ -179,7 +186,6 @@
 
   :aot [redoo.server]
 
-  :uberjar-name "redoo.jar"
+  :uberjar-name "redoo.jar")
 
   ;:prep-tasks [["cljsbuild" "once" "min"] ["garden" "once"] ["less" "once"] "compile"]
-  )

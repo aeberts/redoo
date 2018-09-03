@@ -3,7 +3,7 @@
               [devtools.core :as devtools]
               [reagent.core :as reagent]
               [re-frame.core :as re-frame :refer [dispatch-sync dispatch]]
-              [re-frisk.core :refer [enable-re-frisk!]]
+;;              [re-frisk.core :refer [enable-re-frisk!]]
               [redoo.events]
               [redoo.subs]
               [redoo.routes :as routes]
@@ -15,7 +15,7 @@
 (defn dev-setup []
   (when config/debug?
     (enable-console-print!)
-    (enable-re-frisk!)
+    ;;(enable-re-frisk!)
     (println "dev mode")
     (devtools/install!)
     (dirac/install!)))

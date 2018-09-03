@@ -1,5 +1,6 @@
 (ns redoo.events
   (:require [re-frame.core :as re-frame :refer [reg-event-db after path trim-v debug reg-event-fx inject-cofx]]
+            [day8.re-frame.tracing :refer-macros [fn-traced]]
             [redoo.db :as db :refer [default-value todos->local-store]]
             [cljs.spec.alpha :as s]))
 
@@ -53,7 +54,7 @@
 (reg-event-db
   :add-todo
   todo-interceptors
-  (fn [todos [text]]
+  (fn-traced [todos [text]]
     (let [id (allocate-next-id todos)]
       (assoc todos id {:id id :title text :status :active}))))
 
@@ -79,15 +80,15 @@
   (fn [todos [id]]
     (if (= (:status (todos id)) :active)
       (update-in todos [id] assoc :status :done)
-      (update-in todos [id] assoc :status :active))
-    ))
+      (update-in todos [id] assoc :status :active))))
+
 
 (reg-event-db
   :update-todo-title
   todo-interceptors
   (fn [todos [id text]]
-    (update-in todos [id] assoc :title text)
-    ))
+    (update-in todos [id] assoc :title text)))
+
 
 (reg-event-db
   :delete-all-todos

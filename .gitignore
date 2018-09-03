@@ -1,3 +1,4 @@
+.DS_Store
 /*.log
 /target
 # /*-init.clj
@@ -9,4 +10,5 @@ out
 /.lein-repl-history
 .figwheel/
 .lein-repl-history
+.lein-failures
 resources/public/compiled/*
