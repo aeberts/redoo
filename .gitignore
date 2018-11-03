@@ -13,3 +13,4 @@ out
 .lein-failures
 resources/public/compiled/*
 .nrepl-port
+.swp
