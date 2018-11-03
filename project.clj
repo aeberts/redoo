@@ -27,15 +27,10 @@
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/clojurescript "1.10.339"]
                  [org.clojure/tools.nrepl "0.2.13"]
-                 ;[binaryage/devtools "0.9.4"]
-                 ;[binaryage/dirac "1.2.17"]
-                 ;[figwheel "0.5.14"]
-                 ;[figwheel-sidecar "0.5.14" :exclusions [ring/ring-codec joda-time clj-time]]
                  [reagent "0.8.1"]
                  [re-frame "0.10.5"]
-
-                 ;;[re-frisk "0.5.4"]
                  [org.clojure/core.async "0.4.474"]
+                 ^{:voom {:repo "https://github.com/Day8/re-com" :branch "master"}}
                  [re-com "2.1.0"]
                  [secretary "1.2.3"]
                  [garden "1.3.5"]
@@ -50,7 +45,8 @@
             [lein-shell "0.4.1"]
             [lein-cooper "1.2.2" :exclusions [org.clojure/clojure]]
             [lein-figwheel "0.5.16" :exclusions [org.clojure/clojure]]
-            [lein-pprint "1.1.2"]]
+            [lein-pprint "1.1.2"]
+            [lein-voom "0.1.0-20180617_140646-g0ba7ec8"]]
 
 
   :min-lein-version "2.5.3"

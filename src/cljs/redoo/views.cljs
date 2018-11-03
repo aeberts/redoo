@@ -16,7 +16,7 @@
   (let [val (r/atom "")
         stop #(reset! val "")
         save #(let [v (-> @val str clojure.string/trim)]
-                (when (seq v) (on-save v))
+                (on-save v)
                 (stop))]
     (fn []
       [rc/box
@@ -24,9 +24,9 @@
        :child [rc/input-text
                :model val
                :placeholder "Enter a new todo"
-               :on-change #(do (reset! val %)
-                               (save))
-               :change-on-blur? true]])))
+               :on-change #(do (reset! val %) (save))
+               :change-on-blur? true
+               ]])))
 
 (defn todo-edit
   [{:keys [title on-save on-stop]}]
