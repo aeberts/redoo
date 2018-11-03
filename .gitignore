@@ -14,3 +14,4 @@ out
 resources/public/compiled/*
 .nrepl-port
 .swp
+pom.xml

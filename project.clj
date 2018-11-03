@@ -31,7 +31,7 @@
                  [re-frame "0.10.5"]
                  [org.clojure/core.async "0.4.474"]
                  ^{:voom {:repo "https://github.com/Day8/re-com" :branch "master"}}
-                 [re-com "2.1.0"]
+                 [re-com "2.2.0-20181102_070954-gebad92b"]
                  [secretary "1.2.3"]
                  [garden "1.3.5"]
                  [ns-tracker "0.3.1"]
