@@ -46,7 +46,7 @@
             [lein-cooper "1.2.2" :exclusions [org.clojure/clojure]]
             [lein-figwheel "0.5.16" :exclusions [org.clojure/clojure]]
             [lein-pprint "1.1.2"]
-            [lein-voom "0.1.0-20180617_140646-g0ba7ec8"]]
+            ]
 
 
   :min-lein-version "2.5.3"
