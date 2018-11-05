@@ -22,6 +22,7 @@
       [rc/box
        :size "auto"
        :child [rc/input-text
+               :width "700px"
                :model val
                :placeholder "Enter a new todo"
                :on-change #(do (reset! val %) (save))
