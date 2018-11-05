@@ -102,7 +102,7 @@
                 (for [todo visible-todos]
                   ^{:key (:id todo)} [todo-item todo])]]))
 
-;; home
+;; home panel
 
 (defn home-title []
   (let [app-name (subscribe [:app-name])]
@@ -137,7 +137,7 @@
                 [rc/gap
                  :size "20px"]]]))
 
-;; about
+;; about page
 
 (defn about-title []
   [rc/title
